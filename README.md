@@ -1,5 +1,4 @@
 # Homework_6
-Homework 6
 ================
 Tamires Amorim, Yamei Li and Meirou Guan and Carol
 11/9/2020
@@ -423,5 +422,5 @@ auc<-roc_curve$auc
 text(0.5,0.4,paste("AUC",round(auc,digits=2)),col="blue")
 ```
 
-![](HM--6_files/figure-gfm/unnamed-chunk-18-1.png)<!-- --> The AUC=0.76,
-more than 0.75, the accuracy of this model is might be good.
+(HM--6_files/figure-gfm/unnamed-chunk-18-1.png)
+The AUC=0.76, more than 0.75, the accuracy of this model is might be good.
