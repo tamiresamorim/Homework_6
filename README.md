@@ -384,44 +384,4 @@ sum_diag/sum #Prediction accuracy
     ## [1] 0.8128549
 
 ##### Conclusion:
-
-The prediction accuracy is 0.81258549. And from the plot below we want
-to confirm the prediction.
-
-``` r
-#ROC CURVE
-library(pROC)
-```
-
-    ## Warning: package 'pROC' was built under R version 4.0.3
-
-    ## Type 'citation("pROC")' for a citation.
-
-    ## 
-    ## Attaching package: 'pROC'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     cov, smooth, var
-
-``` r
-roc_curve<-roc(test$LABFORCE,prob)
-```
-
-    ## Setting levels: control = Not in LF, case = in LF
-
-    ## Setting direction: controls < cases
-
-``` r
-x<-1-roc_curve$specificities
-y<-roc_curve$sensitivities
-plot(x=x,y=y,xlim=c(0,1),ylim=c(0,1),xlab="1-specificity",
-ylab="sensitivity",main="ROC Curve",type="l",lwd=2)
-abline(a=0,b=1,col="grey")
-auc<-roc_curve$auc
-text(0.5,0.4,paste("AUC",round(auc,digits=2)),col="blue")
-```
-
-![](HM--6_files/figure-gfm/unnamed-chunk-18-1.png)<!-- --> 
-
-The AUC=0.76, more than 0.75, the accuracy of this model is might be good.
+The prediction accuracy is 0.81258549.
