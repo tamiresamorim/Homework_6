@@ -1,0 +1,176 @@
+---
+title: "Homework 6"
+author: "Tamires Amorim, Yamei Li and Meirou Guan and Carol"
+date: "11/9/2020"
+output: github_document
+---
+
+```{r}
+load("~/R/acs2017_ny_data.RData")
+```
+
+### Binary Dependent Variable Model
+
+The following project wants to understand the interactions of binary variables as the dependent variable in a regression model. The analysis will be based on the labor force participation, looking into different groups and their working choices. 
+
+#### 1. Loading  and Understanding the data
+
+First we loaded the data we want to observe, and transformed it into a factor, this way our dummy variables will not be treated as a continuous variable. 
+
+```{r}
+acs2017_ny$LABFORCE <- as.factor(acs2017_ny$LABFORCE)
+levels(acs2017_ny$LABFORCE) <- c("NA","Not in LF","in LF")
+acs2017_ny$MARST <- as.factor(acs2017_ny$MARST)
+levels(acs2017_ny$MARST) <- c("married spouse present","married spouse absent","separated","divo
+rced","widowed","never married")
+```
+
+Before getting to the interpretation of the models, we wanted to do the summary of the variables to see the components of the sample we are looking into.
+```{r}
+acs2017_ny$age_bands <- cut(acs2017_ny$AGE,breaks=c(0,25,35,45,55,65,100))
+table(acs2017_ny$age_bands,acs2017_ny$LABFORCE)
+```
+When observing the difference between “NA” and Not in the Labor Force based on the age group, we can assume the people not in the labor force are the ones that do not work and are not actively seeking for a job.Another important information is the fraction of people aging from 55 to 65 which is 18106/98436 or 0.1839, 18% of the labor force. The larger group in the labor force are 45 to 55 years old consisting of 22% of the group, and the smaller group aging from 65 to 100 (5.97%) which can be some retirees that also have a job. From this we can conclude that a good predictor for participation in the labor force might be the gender, family constitution, marital status, since people on in the higher age group will work to support their families.
+
+#### 2. Logit models and its analysis
+
+##### A) subset the group (males from 25 to 65 years old)
+We  decided to look at different subsets including Male and female separation. Because the coefficients on different X variables has different effect on labor force based on gender, so while a X variable could be positive overall it might be negative for 1 particular gender. We also included the age group from 25 to 65, just as a baseline. 
+```{r}
+pick_use1 <- (acs2017_ny$AGE >25) & (acs2017_ny$AGE <= 65) & (acs2017_ny$female == 0)
+dat_use1 <- subset(acs2017_ny, pick_use1)
+dat_use1$LABFORCE <- droplevels(dat_use1$LABFORCE) # actually not necessary since logit is smart enough to drop unused levels, but helps my personal sense of order
+
+```
+
+Regression Model 1: Here we have age, race, and education as the explanatory variables for the labor force. 
+```{r}
+model_logit1 <- glm(LABFORCE ~ AGE + I(AGE^2) + AfAm + Asian + race_oth + Hispanic
+ + educ_hs + educ_somecoll + educ_college + educ_advdeg
+ ,
+ family = binomial, data = dat_use1)
+summary(model_logit1)
+```
+##### Conclusions model1: 
+a) The variables are statistically significant,  less than 0.001 at confidence level.
+b) Other race cannot be predicted on the model, because there is not enough evidence to reject the null, and it is not adequately capturing the information we are looking for. 
+c) Age squared is negative related with labor force, because as people age their participation in the labor force decrease over time.
+d) The African American participation in the labor force is also a negative, probably due to social differences in the country. 
+
+##### B) subset the group (females from 25 to 65 years old)
+```{r}
+pick_use2 <- (acs2017_ny$AGE >25) & (acs2017_ny$AGE <= 65) & (acs2017_ny$female == 1)
+dat_use2 <- subset(acs2017_ny, pick_use2)
+dat_use2$LABFORCE <- droplevels(dat_use2$LABFORCE) 
+```
+
+Regression Model 2: Here we have age, race, education and marital status as the explanatory variables for the labor force, we added the marital status now because our bias is that women with family might not work as much as a single women. 
+```{r}
+model_logit2 <- glm(LABFORCE ~ AGE + I(AGE^2) + AfAm + Asian + race_oth + Hispanic
+ + educ_hs + educ_somecoll + educ_college + educ_advdeg
+ + MARST ,
+ family = binomial, data = dat_use1)
+summary(model_logit2)
+```
+##### Conclusions model2: 
+a) Apparently, with greater the amount of variables, some of the previous variables are not as important to predict the model for examples African American and Hispanic women, MARSTmarried spouse absent and MARSTwidowed are also out of our possible prediction. 
+b) Other race  now can be predicted, but with a lower significance level than the other variables.  
+c) Age squared keeps the negative relation with labor force, because as people age their participation in the labor force decrease over time. And education keeps its positive relation. 
+
+##### C) subset the group (everyone from 25 to 65 years old)
+```{r}
+pick_use3 <- (acs2017_ny$AGE >25) & (acs2017_ny$AGE <= 65)
+dat_use3 <- subset(acs2017_ny, pick_use1)
+dat_use3$LABFORCE <- droplevels(dat_use3$LABFORCE)
+```
+
+
+Regression Model 3: Here we have age, race, education and marital status as the explanatory variables for the labor force. 
+```{r}
+model_logit3 <- glm(LABFORCE ~ AGE + I(AGE^2) + female + AfAm + Asian + race_oth + Hispanic
+ + educ_hs + educ_somecoll + educ_college + educ_advdeg
+ + MARST ,
+ family = binomial, data = dat_use3)
+summary(model_logit3)
+```
+
+##### Conclusions model3:
+a) As we increased the predictors from model 1 to model 3 the intercept got bigger from -5.0345015 (model 1), to  -3.242e+00 (model 2) and -2.6002178 (model3).
+b) Divorced people and separated are not as statistically significant as the other variables.
+c) Asian and other race cannot predict given lack of evidence to reject the null.
+d) Female have a negative relation with labor force and all the other variables are statistically significant.
+
+#### 3. Probit Model and its analysis
+
+##### A) The subset used is the same as the first model_logit1:
+Males from 25 to 65 years old and the predictors involve age, race and education.
+```{r}
+regn_probit1 <- glm(LABFORCE ~ AGE + I(AGE^2) + AfAm + Asian + race_oth + Hispanic 
+            + educ_hs + educ_somecoll + educ_college + educ_advdeg,
+            family = binomial (link = 'probit'), data = dat_use1)
+summary(regn_probit1)
+```
+
+##### Conclusions probit model:
+a) The intercept is greater than the model1 (logit).
+b) Other race cannot predict given lack of evidence to reject the null.And Hispanic is not as statistically significant as the other variables, different from model one which might be due to the fact that we are looking at predicted probabilities, implying that the changes in labor force are not strongly related to the Hispanic population.Although, it might be a sign that the dummies selected are not capturing the variations in the labor force. 
+
+#### 4. Predicting the model logit 1 
+
+```{r}
+#Predict
+set.seed(11111)
+index<-sample(x=2,size=nrow(dat_use1),replace=TRUE,prob=c(0.7,0.3))
+train<-dat_use1[index==1,]
+test<-dat_use1[index==2,]
+dim(dat_use1)
+```
+
+```{r}
+dim(train)
+```
+```{r}
+dim(test)
+```
+
+```{r}
+trainmodel<-glm(LABFORCE ~ AGE + I(AGE^2) + AfAm + Asian + race_oth + Hispanic
+ + educ_hs + educ_somecoll + educ_college + educ_advdeg
+ ,
+ family = binomial, data = dat_use1)
+prob<-predict(object=trainmodel,newdata=test,type="response")# use the train model to predict
+pred<-cbind(test,prob)
+pred<-transform(pred,predict=ifelse(prob<=0.5,0,1)) #Reclassify the predicted probability values
+ta<-table(pred$LABFORCE,pred$predict) #Compare the actual and predicted values of the model
+ta
+```
+
+```{r}
+sum_diag<-sum(diag(ta)) #the sum of the correct predict Numbers
+sum<-sum(ta) #the sum of predict Numbers
+sum_diag/sum #Prediction accuracy
+```
+##### Conclusion: 
+The prediction accuracy is 0.81258549. And from the plot below we want to confirm the prediction. 
+
+```{r}
+#ROC CURVE
+library(pROC)
+```
+
+
+```{r}
+roc_curve<-roc(test$LABFORCE,prob)
+```
+
+```{r}
+x<-1-roc_curve$specificities
+y<-roc_curve$sensitivities
+plot(x=x,y=y,xlim=c(0,1),ylim=c(0,1),xlab="1-specificity",
+ylab="sensitivity",main="ROC Curve",type="l",lwd=2)
+abline(a=0,b=1,col="grey")
+auc<-roc_curve$auc
+text(0.5,0.4,paste("AUC",round(auc,digits=2)),col="blue")
+```
+The AUC=0.76, more than 0.75, the accuracy of this model is might be good.
+
