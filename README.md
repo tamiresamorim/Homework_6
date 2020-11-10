@@ -385,3 +385,15 @@ sum_diag/sum #Prediction accuracy
 
 ##### Conclusion:
 The prediction accuracy is 0.81258549.
+
+### Final Project Research: Analysis of Wage gap between African Americans and White workers. 
+
+#### Article 1: THE STRUCTURE OF DISADVANTAGE: INDIVIDUAL AND OCCUPATIONAL DETERMINANTS OF THE BLACK-WHITE WAGE GAP
+The article is based on the 1990 census and the Dictionary of Occupational Titles, it uses regression models to show that the income inequality between races in same and different occupations are not due to skill demand for the  job, neither individual characteristics, status or demographic composition. It also compares private and public sectors, where the first have restrictions in the movement of black men in higher positions in a company, limiting their earnings, and the second more “related to human capital and occupational placement”. The methods used are the OLS and two-level framework, the paper is analyzing men between the ages of 25 and 64, employed in nonfarm occupations and earned income in 1989. This data is  outdated and the challenge will be finding the updated data, and observe if there were changes from the time it was released. 
+
+Grodsky, Eric, and Devah Pager. “The Structure of Disadvantage: Individual and Occupational Determinants of the Black-White Wage Gap.” American Sociological Review, vol. 66, no. 4, 2001, pp. 542–567. JSTOR, www.jstor.org/stable/3088922. Accessed 10 Nov. 2020.
+
+#### Article 2: Disappointing Facts about the Black-White Wage Gap
+This is not an article, but a letter at the Federal Reserve Bank of San Francisco, Economic Research Publications. Which was interesting to read because it gives more clear data to someone new to the subject. It presents some historical background and challenges other research by demonstrating that racial wage inequality cannot be fully interpreted by “age, education, job type or location”. The data come from the Current Population Survey (CPS) from 1979 to 2016 and uses regression analysis “to separate differences in pay related to observable factors from those related to other harder-to-measure factors”. Its interpretations also include education attainment and sectorial differences.  
+
+Daly, Mary, Hobijn, Bart and Pedtke, Joseph H., (2017), Disappointing Facts about the Black-White Wage Gap, FRBSF Economic Letter, issue , number 26, https://EconPapers.repec.org/RePEc:fip:fedfel:00141.
